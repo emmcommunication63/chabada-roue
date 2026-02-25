@@ -7,34 +7,43 @@
     <style>
         body { font-family: 'Segoe UI', sans-serif; text-align: center; background: #fdf2e9; margin: 0; padding: 20px; }
         .card { max-width: 400px; margin: auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        h1 { color: #d35400; }
+        h1 { color: #d35400; font-size: 24px; margin-bottom: 20px; }
         .step { display: none; }
         .active { display: block; }
-        button { background: #27ae60; color: white; border: none; padding: 15px; border-radius: 50px; cursor: pointer; font-size: 16px; width: 100%; font-weight: bold; margin-top: 10px; }
-        .btn-google { background: #4285F4; }
+        
+        /* Boutons */
+        button { border: none; padding: 18px; border-radius: 50px; cursor: pointer; font-size: 16px; width: 100%; font-weight: bold; margin-top: 10px; transition: 0.3s; }
+        .btn-google { background: #4285F4; color: white; box-shadow: 0 4px 0 #2c5ba7; }
+        .btn-play { background: #e67e22; color: white; box-shadow: 0 4px 0 #b35d15; }
+        button:active { transform: translateY(4px); box-shadow: none; }
+
+        /* Roue */
         #wheel-container { position: relative; width: 300px; height: 300px; margin: 20px auto; }
-        #canvas { width: 100%; height: 100%; transition: transform 4s cubic-bezier(0.1, 0, 0.2, 1); transform: rotate(0deg); }
+        #canvas { width: 100%; height: 100%; transition: transform 4s cubic-bezier(0.1, 0, 0.2, 1); }
         #pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #c0392b; z-index: 10; }
-        .instruction { font-size: 15px; color: #666; margin-bottom: 15px; line-height: 1.4; }
-        .highlight { color: #d35400; font-weight: bold; }
+        
+        .main-instruction { font-size: 18px; color: #333; font-weight: 600; margin-bottom: 25px; line-height: 1.4; }
     </style>
 </head>
 <body>
 
 <div class="card">
     <div id="step1" class="step active">
-        <h1>🎁 Un cadeau ?</h1>
-        <div class="instruction">
-            1. Cliquez sur le bouton bleu.<br>
-            2. Laissez votre avis sur Google.<br>
-            3. <span class="highlight">Revenez ensuite sur cette page</span> pour lancer la roue !
+        <h1>🎁 Cadeau offert !</h1>
+        
+        <div class="main-instruction">
+            Donne-nous ton avis et <br>reviens gagner ton lot !
         </div>
         
-        <button class="btn-google" onclick="openGoogle()">JE LAISSE MON AVIS</button>
+        <button class="btn-google" onclick="openGoogle()">
+            ⭐️ LAISSER MON AVIS GOOGLE
+        </button>
         
-        <div id="after-click" style="display:none; margin-top:20px; border-top: 1px dashed #ccc; padding-top: 15px;">
-            <p style="font-size: 14px;">Vous avez posté votre avis ?</p>
-            <button style="background:#e67e22;" onclick="showStep(2)">JOUER À LA ROUE</button>
+        <div id="after-click" style="display:none; margin-top:30px; border-top: 2px dashed #fdf2e9; padding-top: 20px;">
+            <p style="font-size: 14px; color: #d35400; font-weight: bold;">Tu es revenu ? C'est le moment !</p>
+            <button class="btn-play" onclick="showStep(2)">
+                🎰 LANCER LA ROUE
+            </button>
         </div>
     </div>
 
@@ -44,17 +53,17 @@
             <div id="pointer"></div>
             <canvas id="canvas" width="500" height="500"></canvas>
         </div>
-        <button id="spin-button" onclick="spin()">LANCER LA ROUE</button>
+        <button id="spin-button" class="btn-play" onclick="spin()">TOURNE LA ROUE !</button>
     </div>
 
     <div id="step3" class="step">
         <h2>Bravo ! 🎉</h2>
-        <p>Vous avez gagné :</p>
+        <p>Tu as gagné :</p>
         <div style="font-size: 28px; color: #d35400; font-weight: bold; margin: 20px 0;" id="prize-text"></div>
         <div style="border: 2px dashed #d35400; padding: 15px; border-radius: 10px; background: #fff5eb;">
             CODE : <b>CHABADA-PROMO</b>
         </div>
-        <p><small>Valable 14 jours sur présentation de cet écran.</small></p>
+        <p><small>Valable 14 jours sur présentation en caisse.</small></p>
     </div>
 </div>
 
