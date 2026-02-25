@@ -36,22 +36,11 @@
         }
         
         h1 { font-size: 24px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; color: var(--vert-chabada); }
-        .win-mention { font-size: 18px; font-weight: bold; margin-bottom: 20px; color: var(--blanc); }
+        .win-mention { font-size: 18px; font-weight: bold; margin-bottom: 10px; color: var(--blanc); }
+        .lots-text { font-size: 15px; color: #b3b3b3; font-style: italic; margin-bottom: 25px; }
         
         .step { display: none; }
         .active { display: block; }
-        
-        /* Liste des lots sur la page 1 */
-        .lots-preview {
-            background: rgba(255,255,255,0.05);
-            padding: 15px;
-            border-radius: 20px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            text-align: left;
-        }
-        .lot-item { margin: 8px 0; display: flex; align-items: center; }
-        .lot-icon { margin-right: 10px; font-size: 18px; }
 
         button { 
             display: block;
@@ -97,6 +86,16 @@
         
         .step-label { font-size: 14px; color: var(--vert-chabada); font-weight: bold; margin-top: 20px; text-align: left; }
         .divider { border-top: 1px solid #444; margin: 25px 0; }
+        
+        /* Style renforcé pour le message de retour */
+        #return-hint { 
+            font-size: 16px; 
+            color: #ffcc00; /* Jaune pour attirer l'œil */
+            text-align: center; 
+            margin-bottom: -5px; 
+            font-weight: 800;
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
@@ -109,22 +108,17 @@
     <div id="section1" class="step active">
         <h1>CADEAU OFFERT</h1>
         <div class="win-mention">🎉 100% GAGNANT</div>
-
-        <div class="lots-preview">
-            <div class="lot-item"><span class="lot-icon">🥗</span> <b>Un menu ou un Poké</b></div>
-            <div class="lot-item"><span class="lot-icon">🍩</span> <b>Un dessert au choix</b></div>
-            <div class="lot-item"><span class="lot-icon">☕️</span> <b>Boisson ou café</b></div>
-        </div>
+        <div class="lots-text">Poké au choix, menu offert...</div>
         
         <div class="step-label">ÉTAPE 1</div>
         <button class="btn-google" onclick="openGoogle()">
-            ⭐️ ÉCRIRE MON AVIS GOOGLE
+            ⭐️ LAISSER MON AVIS GOOGLE
         </button>
         
         <div class="divider"></div>
 
         <div class="step-label">ÉTAPE 2</div>
-        <p id="return-hint" style="font-size: 14px; color: #888; text-align: left; margin-bottom: -10px;">Revenez ici après avoir posté :</p>
+        <p id="return-hint">⚠️ REVIENS ICI APRÈS TON AVIS</p>
         <button id="main-play-btn" class="btn-play btn-waiting" onclick="showStep(2)">
             🎰 LANCER LA ROUE
         </button>
@@ -188,7 +182,8 @@
         window.open('https://search.google.com/local/writereview?placeid=ChIJLZxOIiYd90cRt01QYS6PTeg', '_blank');
         const playBtn = document.getElementById('main-play-btn');
         playBtn.classList.remove('btn-waiting');
-        document.getElementById('return-hint').innerHTML = "<b style='color:#1ea222'>✓ Terminé ? Cliquez ci-dessous :</b>";
+        document.getElementById('return-hint').style.color = "#1ea222";
+        document.getElementById('return-hint').innerHTML = "<b>✓ CLIQUER CI-DESSOUS POUR JOUER :</b>";
     }
 
     function showStep(n) {
