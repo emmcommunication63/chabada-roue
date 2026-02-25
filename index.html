@@ -35,11 +35,24 @@
             border: 1px solid #333;
         }
         
-        h1 { font-size: 22px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; }
+        h1 { font-size: 24px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; color: var(--vert-chabada); }
+        .win-mention { font-size: 18px; font-weight: bold; margin-bottom: 20px; color: var(--blanc); }
+        
         .step { display: none; }
         .active { display: block; }
         
-        /* Correction de la cliquabilité */
+        /* Liste des lots sur la page 1 */
+        .lots-preview {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            text-align: left;
+        }
+        .lot-item { margin: 8px 0; display: flex; align-items: center; }
+        .lot-icon { margin-right: 10px; font-size: 18px; }
+
         button { 
             display: block;
             width: 100%;
@@ -49,18 +62,16 @@
             cursor: pointer; 
             font-size: 16px; 
             font-weight: bold; 
-            margin-top: 20px; 
+            margin-top: 15px; 
             text-transform: uppercase;
             position: relative;
-            z-index: 20; /* Priorité standard pour les boutons */
+            z-index: 20;
             transition: 0.3s;
             -webkit-appearance: none;
         }
         
         .btn-google { background: var(--blanc); color: var(--noir); box-shadow: 0 4px 0 #ccc; }
         .btn-play { background: var(--vert-chabada); color: var(--blanc); box-shadow: 0 4px 0 #146d17; }
-        
-        /* État visuel uniquement */
         .btn-waiting { opacity: 0.5; filter: grayscale(0.5); }
         
         button:active { transform: translateY(2px); box-shadow: none; }
@@ -96,7 +107,14 @@
 
 <div class="card">
     <div id="section1" class="step active">
-        <h1>🎁 Cadeau Offert</h1>
+        <h1>CADEAU OFFERT</h1>
+        <div class="win-mention">🎉 100% GAGNANT</div>
+
+        <div class="lots-preview">
+            <div class="lot-item"><span class="lot-icon">🥗</span> <b>Un menu ou un Poké</b></div>
+            <div class="lot-item"><span class="lot-icon">🍩</span> <b>Un dessert au choix</b></div>
+            <div class="lot-item"><span class="lot-icon">☕️</span> <b>Boisson ou café</b></div>
+        </div>
         
         <div class="step-label">ÉTAPE 1</div>
         <button class="btn-google" onclick="openGoogle()">
