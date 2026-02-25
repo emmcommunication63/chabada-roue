@@ -10,74 +10,104 @@
             --gris-fonce: #1e1e1e;
             --vert-chabada: #27ae60;
             --blanc: #ffffff;
-            --gris-texte: #b3b3b3;
         }
 
-        body { font-family: 'Segoe UI', sans-serif; text-align: center; background: var(--noir); color: var(--blanc); margin: 0; padding: 15px; }
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            text-align: center; 
+            background: var(--noir); 
+            color: var(--blanc); 
+            margin: 0; 
+            padding: 0;
+            overflow-x: hidden;
+        }
         
-        /* Ajustement du logo pour ne pas gêner le clic */
-        .logo-container { margin: 10px auto; width: 140px; position: relative; z-index: 1; }
-        .logo-chabada { width: 100%; height: auto; border-radius: 10px; }
+        /* Logo simplifié au maximum */
+        .header-logo {
+            padding: 20px 0;
+            background: var(--noir);
+        }
+        .logo-chabada { 
+            width: 120px; 
+            height: auto;
+            pointer-events: none; /* L'image laisse passer les clics au travers */
+        }
         
-        .card { max-width: 400px; margin: auto; background: var(--gris-fonce); padding: 30px 20px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #333; position: relative; z-index: 10; }
+        .card { 
+            max-width: 380px; 
+            margin: 10px auto; 
+            background: var(--gris-fonce); 
+            padding: 25px; 
+            border-radius: 25px; 
+            border: 1px solid #333;
+        }
         
-        h1 { color: var(--blanc); font-size: 22px; margin-bottom: 10px; text-transform: uppercase; }
-        
+        h1 { font-size: 22px; text-transform: uppercase; margin-bottom: 15px; }
         .step { display: none; }
         .active { display: block; }
         
-        /* Correction des boutons pour le clic */
-        button { border: none; padding: 18px; border-radius: 12px; cursor: pointer; font-size: 16px; width: 100%; font-weight: bold; margin-top: 15px; transition: 0.3s; text-transform: uppercase; position: relative; z-index: 20; display: block; }
+        /* BOUTONS AVEC PRIORITÉ MAXIMALE */
+        button { 
+            display: block;
+            width: 100%;
+            border: none; 
+            padding: 20px; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            font-weight: bold; 
+            margin-top: 20px; 
+            text-transform: uppercase;
+            position: relative;
+            z-index: 9999 !important; /* Force le bouton au premier plan absolu */
+            -webkit-appearance: none; /* Pour iOS */
+        }
         
         .btn-google { background: var(--blanc); color: var(--noir); }
-        .btn-play { background: var(--vert-chabada); color: var(--blanc); box-shadow: 0 4px 0 #1e8449; }
+        .btn-play { background: var(--vert-chabada); color: var(--blanc); }
         
-        button:active { transform: translateY(2px); box-shadow: none; }
-
-        #wheel-container { position: relative; width: 280px; height: 280px; margin: 20px auto; border: 5px solid var(--vert-chabada); border-radius: 50%; box-shadow: 0 0 20px rgba(39, 174, 96, 0.3); }
+        /* ROUE */
+        #wheel-container { position: relative; width: 280px; height: 280px; margin: 25px auto; border: 5px solid var(--vert-chabada); border-radius: 50%; }
         #canvas { width: 100%; height: 100%; transition: transform 4s cubic-bezier(0.1, 0, 0.2, 1); border-radius: 50%; }
         #pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid var(--vert-chabada); z-index: 30; }
         
-        .main-instruction { font-size: 16px; color: var(--gris-texte); margin-bottom: 25px; line-height: 1.4; }
-        .highlight { color: var(--vert-chabada); font-weight: bold; }
+        .instruction { font-size: 16px; color: #b3b3b3; line-height: 1.4; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="logo-container">
-        <img src="https://tse3.mm.bing.net/th/id/OIP.tuqxdPlqhzl7iLdY6zNnswHaHa?pid=Api" alt="Logo Chabada" class="logo-chabada">
+    <div class="header-logo">
+        <img src="https://tse3.mm.bing.net/th/id/OIP.tuqxdPlqhzl7iLdY6zNnswHaHa?pid=Api" alt="Logo" class="logo-chabada">
     </div>
 
 <div class="card">
     <div id="step1" class="step active">
-        <h1>🎁 CADEAU OFFERT</h1>
-        <div class="main-instruction">Donne-nous ton avis et <br><span class="highlight">reviens gagner ton lot !</span></div>
+        <h1>🎁 Cadeau Offert</h1>
+        <p class="instruction">Donne-nous ton avis et <br><span style="color:var(--vert-chabada)">reviens gagner ton lot !</span></p>
         
-        <button class="btn-google" onclick="openGoogle()">⭐️ LAISSER MON AVIS GOOGLE</button>
+        <button class="btn-google" onclick="openGoogle()">⭐️ Laisser mon avis Google</button>
         
-        <div id="after-click" style="display:none; margin-top:25px; border-top: 1px solid #333; padding-top: 20px;">
-            <p style="font-size: 14px; color: var(--vert-chabada);">Merci ! C'est le moment de jouer :</p>
-            <button class="btn-play" onclick="showStep(2)">🎰 LANCER LA ROUE</button>
+        <div id="after-click" style="display:none; margin-top:30px; border-top: 1px solid #333; padding-top: 20px;">
+            <button class="btn-play" onclick="showStep(2)">🎰 Lancer la roue</button>
         </div>
     </div>
 
     <div id="step2" class="step">
-        <h1>BONNE CHANCE !</h1>
+        <h1>Bonne Chance !</h1>
         <div id="wheel-container">
             <div id="pointer"></div>
             <canvas id="canvas" width="500" height="500"></canvas>
         </div>
-        <button id="spin-button" class="btn-play" onclick="spin()">FAIRE TOURNER</button>
+        <button id="spin-button" class="btn-play" onclick="spin()">Tourner la roue</button>
     </div>
 
     <div id="step3" class="step">
-        <h2 style="color: var(--vert-chabada);">BRAVO ! 🎉</h2>
+        <h2 style="color:var(--vert-chabada)">Bravo ! 🎉</h2>
         <p>Tu as gagné :</p>
-        <div style="font-size: 28px; color: var(--blanc); font-weight: bold; margin: 20px 0;" id="prize-text"></div>
-        <div style="border: 2px dashed var(--vert-chabada); padding: 15px; border-radius: 10px; background: rgba(39, 174, 96, 0.1); color: var(--blanc);">
-            CODE : <b style="font-size: 20px;">CHABADA-PROMO</b>
+        <div style="font-size: 28px; font-weight: bold; margin: 20px 0;" id="prize-text"></div>
+        <div style="border: 2px dashed var(--vert-chabada); padding: 15px; border-radius: 10px;">
+            CODE : <b>CHABADA-PROMO</b>
         </div>
-        <p style="font-size: 12px; color: var(--gris-texte); margin-top: 15px;">Présente cet écran en caisse.</p>
     </div>
 </div>
 
@@ -116,12 +146,35 @@
     drawWheel();
 
     function openGoogle() {
-        // Redirection vers l'avis Google
+        // Redirection vers l'avis Google pour l'établissement identifié
         window.open('https://search.google.com/local/writereview?placeid=ChIJLZxOIiYd90cRt01QYS6PTeg', '_blank');
-        // Affiche l'étape suivante sur le site
         document.getElementById('after-click').style.display = 'block';
     }
 
     function showStep(n) {
         document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
         document.getElementById('step' + n).classList.add('active');
+    }
+
+    function spin() {
+        document.getElementById('spin-button').disabled = true;
+        const random = Math.random() * 100;
+        let cumulativeChance = 0;
+        let winningIndex = 0;
+        for (let i = 0; i < wheelConfig.length; i++) {
+            cumulativeChance += wheelConfig[i].chance;
+            if (random < cumulativeChance) { winningIndex = i; break; }
+        }
+        const segments = wheelConfig.length;
+        const degreesPerSegment = 360 / segments;
+        const targetAngle = (360 - (winningIndex * degreesPerSegment) - (degreesPerSegment / 2) + 270) % 360;
+        currentRotation += 2880 + targetAngle;
+        canvas.style.transform = `rotate(${currentRotation}deg)`;
+        setTimeout(() => {
+            document.getElementById('prize-text').innerText = wheelConfig[winningIndex].label;
+            showStep(3);
+        }, 4000);
+    }
+</script>
+</body>
+</html>
