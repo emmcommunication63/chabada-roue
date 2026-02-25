@@ -107,7 +107,7 @@
     <div id="section1" class="step active">
         <h1>CADEAU OFFERT</h1>
         <div class="win-mention">🎉 100% GAGNANT</div>
-        <div class="lots-text">Poké au choix 🥗, menu offert 🎁...</div>
+        <div class="lots-text">Poké healthy 🥗, menu offert 🎁...</div>
         
         <div class="step-label">ÉTAPE 1</div>
         <button class="btn-google" onclick="openGoogle()">
@@ -134,7 +134,7 @@
 
     <div id="section3" class="step">
         <h2 style="color:var(--vert-chabada)">BRAVO ! 🎉</h2>
-        <div style="font-size: 32px; font-weight: bold; margin: 25px 0;" id="prize-text"></div>
+        <div style="font-size: 26px; font-weight: bold; margin: 25px 0;" id="prize-text"></div>
         <div id="coupon-validation" onclick="validateCoupon()">
             <small id="exp-text" style="color: #b3b3b3; display:block; margin-bottom:5px;"></small>
             <b id="unique-code" style="font-size: 20px; color: var(--vert-chabada);"></b>
@@ -144,13 +144,13 @@
 </div>
 
 <script>
-    // Configuration avec tes nouveaux pourcentages
+    // Configuration avec tes intitulés précis et pourcentages
     const wheelConfig = [
-        { label: "UN CAFÉ ☕", color: "#1e1e1e", chance: 30 },
-        { label: "BOISSON 🥤", color: "#1ea222", chance: 20 },
-        { label: "DESSERT 🍰", color: "#2a2a2a", chance: 20 },
-        { label: "-2€ MENU 🏷️", color: "#444444", chance: 15 },
-        { label: "UN POKÉ 🥗", color: "#146d17", chance: 10 },
+        { label: "UN EXPRESSO ☕", color: "#1e1e1e", chance: 30 },
+        { label: "UNE BOISSON 🥤", color: "#1ea222", chance: 20 },
+        { label: "UN DESSERT* 🍰", color: "#2a2a2a", chance: 20 },
+        { label: "-2€ MENU EXPRESS 🏷️", color: "#444444", chance: 15 },
+        { label: "UN POKÉ HEALTHY 🥗", color: "#146d17", chance: 10 },
         { label: "UN MENU 🎁", color: "#ffffff", chance: 5 }
     ];
 
@@ -171,9 +171,9 @@
             ctx.translate(250, 250);
             ctx.rotate(i * arc + arc / 2);
             ctx.fillStyle = (wheelConfig[i].color === "#ffffff") ? "#121212" : "white";
-            ctx.font = "bold 22px Arial";
+            ctx.font = "bold 18px Arial"; // Réduction pour faire tenir les textes longs
             ctx.textAlign = "right";
-            ctx.fillText(wheelConfig[i].label, 230, 10);
+            ctx.fillText(wheelConfig[i].label, 235, 10);
             ctx.restore();
         }
     }
@@ -210,7 +210,11 @@
             const uniqueCode = `CHAB-${String(now.getDate()).padStart(2,'0')}${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}-${Math.floor(1000+Math.random()*9000)}`;
             const exp = new Date(); exp.setDate(now.getDate()+14);
 
-            document.getElementById('prize-text').innerText = wheelConfig[winningIndex].label;
+            // Précision pour le dessert lors de l'affichage du gain
+            let labelGain = wheelConfig[winningIndex].label;
+            if(labelGain.includes("DESSERT")) labelGain = "UN DESSERT 🍰 (hors barres maison)";
+
+            document.getElementById('prize-text').innerText = labelGain;
             document.getElementById('unique-code').innerText = uniqueCode;
             document.getElementById('exp-text').innerText = "VALABLE JUSQU'AU : " + exp.toLocaleDateString('fr-FR');
             showStep(3);
