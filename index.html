@@ -12,27 +12,14 @@
             --blanc: #ffffff;
         }
 
-        body { 
-            font-family: 'Segoe UI', sans-serif; 
-            text-align: center; 
-            background: var(--noir); 
-            color: var(--blanc); 
-            margin: 0; 
-            padding: 0;
-        }
-        
+        body { font-family: 'Segoe UI', sans-serif; text-align: center; background: var(--noir); color: var(--blanc); margin: 0; padding: 0; }
         .header-logo { padding: 30px 0; background: var(--noir); position: relative; z-index: 1; }
         .logo-chabada { width: 150px; height: auto; pointer-events: none; }
         
         .card { 
-            max-width: 380px; 
-            margin: 0 auto; 
-            background: var(--gris-fonce); 
-            padding: 30px 25px; 
-            border-radius: 30px; 
-            position: relative;
-            z-index: 10;
-            border: 1px solid #333;
+            max-width: 380px; margin: 0 auto; background: var(--gris-fonce); 
+            padding: 30px 25px; border-radius: 30px; position: relative; 
+            z-index: 10; border: 1px solid #333;
         }
         
         h1 { font-size: 24px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; color: var(--vert-chabada); }
@@ -43,58 +30,37 @@
         .active { display: block; }
 
         button { 
-            display: block;
-            width: 100%;
-            border: none; 
-            padding: 20px; 
-            border-radius: 15px; 
-            cursor: pointer; 
-            font-size: 16px; 
-            font-weight: bold; 
-            margin-top: 15px; 
-            text-transform: uppercase;
-            position: relative;
-            z-index: 20;
-            transition: 0.3s;
-            -webkit-appearance: none;
+            display: block; width: 100%; border: none; padding: 20px; 
+            border-radius: 15px; cursor: pointer; font-size: 16px; 
+            font-weight: bold; margin-top: 15px; text-transform: uppercase;
+            position: relative; z-index: 20; transition: 0.3s; -webkit-appearance: none;
         }
         
         .btn-google { background: var(--blanc); color: var(--noir); box-shadow: 0 4px 0 #ccc; }
         .btn-play { background: var(--vert-chabada); color: var(--blanc); box-shadow: 0 4px 0 #146d17; }
-        .btn-waiting { opacity: 0.5; filter: grayscale(0.5); }
         
-        button:active { transform: translateY(2px); box-shadow: none; }
-
-        #coupon-validation { 
-            border: 2px dashed var(--vert-chabada); 
-            padding: 20px; 
-            border-radius: 20px; 
-            background: rgba(30, 162, 34, 0.1); 
-            cursor: pointer;
-            margin-top: 20px;
+        /* État désactivé réel */
+        button:disabled { 
+            opacity: 0.3 !important; 
+            cursor: not-allowed !important; 
+            filter: grayscale(1);
+            transform: scale(0.95);
+            box-shadow: none !important;
         }
+        
+        button:active:not(:disabled) { transform: translateY(2px); box-shadow: none; }
+
+        #coupon-validation { border: 2px dashed var(--vert-chabada); padding: 20px; border-radius: 20px; background: rgba(30, 162, 34, 0.1); cursor: pointer; margin-top: 20px; }
         #coupon-validation.used { border-color: #555; background: #222; color: #777 !important; }
 
         #wheel-container { position: relative; width: 300px; height: 300px; margin: 30px auto; }
         #canvas { width: 100%; height: 100%; transition: transform 4s cubic-bezier(0.1, 0, 0.2, 1); border-radius: 50%; }
-        #pointer { 
-            position: absolute; top: -10px; left: 50%; transform: translateX(-50%); 
-            width: 0; height: 0; border-left: 15px solid transparent; 
-            border-right: 15px solid transparent; border-top: 25px solid var(--vert-chabada); 
-            z-index: 30; 
-        }
+        #pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid var(--vert-chabada); z-index: 30; }
         
         .step-label { font-size: 14px; color: var(--vert-chabada); font-weight: bold; margin-top: 20px; text-align: left; }
         .divider { border-top: 1px solid #444; margin: 25px 0; }
         
-        #return-hint { 
-            font-size: 16px; 
-            color: #ffcc00; 
-            text-align: center; 
-            margin-bottom: -5px; 
-            font-weight: 800;
-            text-transform: uppercase;
-        }
+        #return-hint { font-size: 16px; color: #ffcc00; text-align: center; margin-bottom: -5px; font-weight: 800; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -118,7 +84,7 @@
 
         <div class="step-label">ÉTAPE 2</div>
         <p id="return-hint">⚠️ REVIENS ICI APRÈS TON AVIS</p>
-        <button id="main-play-btn" class="btn-play btn-waiting" onclick="showStep(2)">
+        <button id="main-play-btn" class="btn-play" onclick="showStep(2)" disabled="true">
             🎰 LANCER LA ROUE
         </button>
     </div>
@@ -144,7 +110,6 @@
 </div>
 
 <script>
-    // Configuration avec tes intitulés précis et pourcentages
     const wheelConfig = [
         { label: "UN EXPRESSO ☕", color: "#1e1e1e", chance: 30 },
         { label: "UNE BOISSON 🥤", color: "#1ea222", chance: 20 },
@@ -162,19 +127,12 @@
         const segments = wheelConfig.length;
         const arc = 2 * Math.PI / segments;
         for (let i = 0; i < segments; i++) {
-            ctx.beginPath();
-            ctx.fillStyle = wheelConfig[i].color;
-            ctx.moveTo(250, 250);
-            ctx.arc(250, 250, 250, i * arc, (i + 1) * arc);
-            ctx.fill();
-            ctx.save();
-            ctx.translate(250, 250);
-            ctx.rotate(i * arc + arc / 2);
+            ctx.beginPath(); ctx.fillStyle = wheelConfig[i].color;
+            ctx.moveTo(250, 250); ctx.arc(250, 250, 250, i * arc, (i + 1) * arc); ctx.fill();
+            ctx.save(); ctx.translate(250, 250); ctx.rotate(i * arc + arc / 2);
             ctx.fillStyle = (wheelConfig[i].color === "#ffffff") ? "#121212" : "white";
-            ctx.font = "bold 18px Arial"; // Réduction pour faire tenir les textes longs
-            ctx.textAlign = "right";
-            ctx.fillText(wheelConfig[i].label, 235, 10);
-            ctx.restore();
+            ctx.font = "bold 18px Arial"; ctx.textAlign = "right";
+            ctx.fillText(wheelConfig[i].label, 235, 10); ctx.restore();
         }
     }
     drawWheel();
@@ -182,9 +140,10 @@
     function openGoogle() {
         window.open('https://search.google.com/local/writereview?placeid=ChIJLZxOIiYd90cRt01QYS6PTeg', '_blank');
         const playBtn = document.getElementById('main-play-btn');
-        playBtn.classList.remove('btn-waiting');
+        // ACTION : On débloque le bouton de la roue
+        playBtn.disabled = false;
         document.getElementById('return-hint').style.color = "#1ea222";
-        document.getElementById('return-hint').innerHTML = "<b>✓ CLIQUER CI-DESSOUS POUR JOUER :</b>";
+        document.getElementById('return-hint').innerHTML = "<b>✓ MERCI ! CLIQUEZ CI-DESSOUS :</b>";
     }
 
     function showStep(n) {
@@ -195,8 +154,7 @@
     function spin() {
         document.getElementById('spin-button').disabled = true;
         const random = Math.random() * 100;
-        let cumulativeChance = 0;
-        let winningIndex = 0;
+        let cumulativeChance = 0; let winningIndex = 0;
         for (let i = 0; i < wheelConfig.length; i++) {
             cumulativeChance += wheelConfig[i].chance;
             if (random < cumulativeChance) { winningIndex = i; break; }
@@ -209,11 +167,8 @@
             const now = new Date();
             const uniqueCode = `CHAB-${String(now.getDate()).padStart(2,'0')}${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}-${Math.floor(1000+Math.random()*9000)}`;
             const exp = new Date(); exp.setDate(now.getDate()+14);
-
-            // Précision pour le dessert lors de l'affichage du gain
             let labelGain = wheelConfig[winningIndex].label;
             if(labelGain.includes("DESSERT")) labelGain = "UN DESSERT 🍰 (hors barres maison)";
-
             document.getElementById('prize-text').innerText = labelGain;
             document.getElementById('unique-code').innerText = uniqueCode;
             document.getElementById('exp-text').innerText = "VALABLE JUSQU'AU : " + exp.toLocaleDateString('fr-FR');
