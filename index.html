@@ -13,17 +13,16 @@
         }
 
         body { font-family: 'Segoe UI', sans-serif; text-align: center; background: var(--noir); color: var(--blanc); margin: 0; padding: 0; }
-        .header-logo { padding: 30px 0; background: var(--noir); position: relative; z-index: 1; }
+        .header-logo { padding: 30px 0; background: var(--noir); }
         .logo-chabada { width: 150px; height: auto; pointer-events: none; }
         
         .card { 
             max-width: 380px; margin: 0 auto; background: var(--gris-fonce); 
-            padding: 30px 25px; border-radius: 30px; position: relative; 
-            z-index: 10; border: 1px solid #333;
+            padding: 30px 25px; border-radius: 30px; border: 1px solid #333;
         }
         
-        h1 { font-size: 24px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; color: var(--vert-chabada); }
-        .win-mention { font-size: 18px; font-weight: bold; margin-bottom: 10px; color: var(--blanc); }
+        h1 { font-size: 24px; text-transform: uppercase; margin-bottom: 5px; color: var(--vert-chabada); }
+        .win-mention { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
         .lots-text { font-size: 15px; color: #b3b3b3; font-style: italic; margin-bottom: 25px; }
         
         .step { display: none; }
@@ -33,24 +32,13 @@
             display: block; width: 100%; border: none; padding: 20px; 
             border-radius: 15px; cursor: pointer; font-size: 16px; 
             font-weight: bold; margin-top: 15px; text-transform: uppercase;
-            position: relative; z-index: 20; transition: 0.3s; -webkit-appearance: none;
+            transition: 0.3s;
         }
         
-        .btn-google { background: var(--blanc); color: var(--noir); box-shadow: 0 4px 0 #ccc; }
+        .btn-google { background: var(--blanc); color: var(--noir); box-shadow: 0 4px 0 #ccc; position: relative; z-index: 100; }
         .btn-play { background: var(--vert-chabada); color: var(--blanc); box-shadow: 0 4px 0 #146d17; }
         
-        /* Style bouton bloqué */
-        button:disabled { 
-            opacity: 0.3 !important; 
-            cursor: not-allowed !important; 
-            filter: grayscale(1);
-            box-shadow: none !important;
-        }
-        
-        button:active:not(:disabled) { transform: translateY(2px); box-shadow: none; }
-
-        #coupon-validation { border: 2px dashed var(--vert-chabada); padding: 20px; border-radius: 20px; background: rgba(30, 162, 34, 0.1); cursor: pointer; margin-top: 20px; }
-        #coupon-validation.used { border-color: #555; background: #222; color: #777 !important; }
+        button:active { transform: translateY(2px); box-shadow: none; }
 
         #wheel-container { position: relative; width: 300px; height: 300px; margin: 30px auto; }
         #canvas { width: 100%; height: 100%; transition: transform 4s cubic-bezier(0.1, 0, 0.2, 1); border-radius: 50%; }
@@ -59,14 +47,15 @@
         .step-label { font-size: 14px; color: var(--vert-chabada); font-weight: bold; margin-top: 20px; text-align: left; }
         .divider { border-top: 1px solid #444; margin: 25px 0; }
         
-        #return-hint { font-size: 15px; color: #ffcc00; text-align: center; margin-bottom: -5px; font-weight: 800; text-transform: uppercase; }
+        #return-hint { font-size: 15px; color: #ffcc00; text-align: center; margin-bottom: 10px; font-weight: 800; display: none; }
+        #coupon-validation { border: 2px dashed var(--vert-chabada); padding: 20px; border-radius: 20px; background: rgba(30, 162, 34, 0.1); cursor: pointer; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="header-logo">
-        <img src="https://tse3.mm.bing.net/th/id/OIP.tuqxdPlqhzl7iLdY6zNnswHaHa?pid=Api" alt="Logo Chabada" class="logo-chabada">
-    </div>
+<div class="header-logo">
+    <img src="https://tse3.mm.bing.net/th/id/OIP.tuqxdPlqhzl7iLdY6zNnswHaHa?pid=Api" alt="Logo Chabada" class="logo-chabada">
+</div>
 
 <div class="card">
     <div id="section1" class="step active">
@@ -75,17 +64,14 @@
         <div class="lots-text">Poké healthy 🥗, menu offert 🎁...</div>
         
         <div class="step-label">ÉTAPE 1</div>
-        <button class="btn-google" onclick="openGoogle()">
-            ⭐️ LAISSER MON AVIS GOOGLE
-        </button>
+        <button class="btn-google" id="google-trigger">⭐️ LAISSER MON AVIS GOOGLE</button>
         
-        <div class="divider"></div>
-
-        <div class="step-label">ÉTAPE 2</div>
-        <p id="return-hint">⚠️ REVIENS ICI APRÈS TON AVIS</p>
-        <button id="main-play-btn" class="btn-play" onclick="showStep(2)" disabled>
-            🎰 LANCER LA ROUE
-        </button>
+        <div id="step2-area" style="opacity: 0.2; pointer-events: none;">
+            <div class="divider"></div>
+            <div class="step-label">ÉTAPE 2</div>
+            <p id="return-hint">✓ MERCI ! CLIQUEZ CI-DESSOUS :</p>
+            <button class="btn-play" onclick="showStep(2)">🎰 LANCER LA ROUE</button>
+        </div>
     </div>
 
     <div id="section2" class="step">
@@ -97,4 +83,98 @@
         <button id="spin-button" class="btn-play" onclick="spin()">FAIRE TOURNER</button>
     </div>
 
-    <div id="section
+    <div id="section3" class="step">
+        <h2 style="color:var(--vert-chabada)">BRAVO ! 🎉</h2>
+        <div style="font-size: 26px; font-weight: bold; margin: 20px 0;" id="prize-text"></div>
+        
+        <p style="color:#ffffff; font-weight: bold; font-size: 15px; border: 1px solid #555; padding: 10px; border-radius: 10px;">
+            📸 Montrez cet écran à l'équipe <br> pour recevoir votre cadeau !
+        </p>
+
+        <div id="coupon-validation" onclick="validateCoupon()">
+            <small id="exp-text" style="color: #b3b3b3; display:block; margin-bottom:5px;"></small>
+            <b id="unique-code" style="font-size: 20px; color: var(--vert-chabada);"></b>
+            <p id="tap-hint" style="font-size: 10px; margin-top: 10px; color: #b3b3b3;">(À valider par un équipier en caisse)</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const wheelConfig = [
+        { label: "UN EXPRESSO ☕", color: "#1e1e1e", chance: 30 },
+        { label: "UNE BOISSON 🥤", color: "#1ea222", chance: 20 },
+        { label: "UN DESSERT* 🍰", color: "#2a2a2a", chance: 20 },
+        { label: "-2€ MENU EXPRESS 🏷️", color: "#444444", chance: 15 },
+        { label: "UN POKÉ HEALTHY 🥗", color: "#146d17", chance: 10 },
+        { label: "UN MENU 🎁", color: "#ffffff", chance: 5 }
+    ];
+
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let currentRotation = 0;
+
+    function drawWheel() {
+        const segments = wheelConfig.length;
+        const arc = 2 * Math.PI / segments;
+        for (let i = 0; i < segments; i++) {
+            ctx.beginPath(); ctx.fillStyle = wheelConfig[i].color;
+            ctx.moveTo(250, 250); ctx.arc(250, 250, 250, i * arc, (i + 1) * arc); ctx.fill();
+            ctx.save(); ctx.translate(250, 250); ctx.rotate(i * arc + arc / 2);
+            ctx.fillStyle = (wheelConfig[i].color === "#ffffff") ? "#121212" : "white";
+            ctx.font = "bold 18px Arial"; ctx.textAlign = "right";
+            ctx.fillText(wheelConfig[i].label, 235, 10); ctx.restore();
+        }
+    }
+    drawWheel();
+
+    // GESTION DU CLIC GOOGLE SÉCURISÉE
+    document.getElementById('google-trigger').addEventListener('click', function() {
+        window.open('https://search.google.com/local/writereview?placeid=ChIJLZxOIiYd90cRt01QYS6PTeg', '_blank');
+        
+        // On débloque l'étape 2
+        const area = document.getElementById('step2-area');
+        area.style.opacity = "1";
+        area.style.pointerEvents = "auto";
+        document.getElementById('return-hint').style.display = "block";
+    });
+
+    function showStep(n) {
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+        document.getElementById('section' + n).classList.add('active');
+    }
+
+    function spin() {
+        document.getElementById('spin-button').disabled = true;
+        const random = Math.random() * 100;
+        let cumulativeChance = 0; let winningIndex = 0;
+        for (let i = 0; i < wheelConfig.length; i++) {
+            cumulativeChance += wheelConfig[i].chance;
+            if (random < cumulativeChance) { winningIndex = i; break; }
+        }
+        const targetAngle = (360 - (winningIndex * (360/wheelConfig.length)) - (360/wheelConfig.length/2) + 270) % 360;
+        currentRotation += 2880 + targetAngle;
+        canvas.style.transform = `rotate(${currentRotation}deg)`;
+
+        setTimeout(() => {
+            const now = new Date();
+            const uniqueCode = `CHAB-${String(now.getDate()).padStart(2,'0')}${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}-${Math.floor(1000+Math.random()*9000)}`;
+            const exp = new Date(); exp.setDate(now.getDate()+14);
+            let labelGain = wheelConfig[winningIndex].label;
+            if(labelGain.includes("DESSERT")) labelGain = "UN DESSERT 🍰 (hors barres maison)";
+            document.getElementById('prize-text').innerText = labelGain;
+            document.getElementById('unique-code').innerText = uniqueCode;
+            document.getElementById('exp-text').innerText = "VALABLE JUSQU'AU : " + exp.toLocaleDateString('fr-FR');
+            showStep(3);
+        }, 4000);
+    }
+
+    function validateCoupon() {
+        if(confirm("Action pour l'équipier : Valider ce cadeau ?")) {
+            const code = document.getElementById('unique-code');
+            code.innerText = "DÉJÀ UTILISÉ";
+            code.style.color = "#777";
+        }
+    }
+</script>
+</body>
+</html>
