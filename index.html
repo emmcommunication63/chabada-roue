@@ -39,11 +39,11 @@
         .btn-google { background: var(--blanc); color: var(--noir); box-shadow: 0 4px 0 #ccc; }
         .btn-play { background: var(--vert-chabada); color: var(--blanc); box-shadow: 0 4px 0 #146d17; }
         
+        /* Style bouton bloqué */
         button:disabled { 
             opacity: 0.3 !important; 
             cursor: not-allowed !important; 
             filter: grayscale(1);
-            transform: scale(0.95);
             box-shadow: none !important;
         }
         
@@ -60,7 +60,6 @@
         .divider { border-top: 1px solid #444; margin: 25px 0; }
         
         #return-hint { font-size: 15px; color: #ffcc00; text-align: center; margin-bottom: -5px; font-weight: 800; text-transform: uppercase; }
-        .staff-note { font-size: 13px; color: #1ea222; margin-top: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -84,10 +83,9 @@
 
         <div class="step-label">ÉTAPE 2</div>
         <p id="return-hint">⚠️ REVIENS ICI APRÈS TON AVIS</p>
-        <button id="main-play-btn" class="btn-play" onclick="showStep(2)" disabled="true">
+        <button id="main-play-btn" class="btn-play" onclick="showStep(2)" disabled>
             🎰 LANCER LA ROUE
         </button>
-        <p class="staff-note">Présentez votre gain à l'équipe !</p>
     </div>
 
     <div id="section2" class="step">
@@ -99,49 +97,4 @@
         <button id="spin-button" class="btn-play" onclick="spin()">FAIRE TOURNER</button>
     </div>
 
-    <div id="section3" class="step">
-        <h2 style="color:var(--vert-chabada)">BRAVO ! 🎉</h2>
-        <div style="font-size: 26px; font-weight: bold; margin: 20px 0;" id="prize-text"></div>
-        
-        <p style="color:#ffffff; font-weight: bold; font-size: 14px; margin-bottom: 15px;">
-            📸 Montrez cet écran à l'équipe <br> pour recevoir votre cadeau !
-        </p>
-
-        <div id="coupon-validation" onclick="validateCoupon()">
-            <small id="exp-text" style="color: #b3b3b3; display:block; margin-bottom:5px;"></small>
-            <b id="unique-code" style="font-size: 20px; color: var(--vert-chabada);"></b>
-            <p id="tap-hint" style="font-size: 10px; margin-top: 10px; color: #b3b3b3;">(À valider par un équipier en caisse)</p>
-        </div>
-    </div>
-</div>
-
-<script>
-    const wheelConfig = [
-        { label: "UN EXPRESSO ☕", color: "#1e1e1e", chance: 30 },
-        { label: "UNE BOISSON 🥤", color: "#1ea222", chance: 20 },
-        { label: "UN DESSERT* 🍰", color: "#2a2a2a", chance: 20 },
-        { label: "-2€ MENU EXPRESS 🏷️", color: "#444444", chance: 15 },
-        { label: "UN POKÉ HEALTHY 🥗", color: "#146d17", chance: 10 },
-        { label: "UN MENU 🎁", color: "#ffffff", chance: 5 }
-    ];
-
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    let currentRotation = 0;
-
-    function drawWheel() {
-        const segments = wheelConfig.length;
-        const arc = 2 * Math.PI / segments;
-        for (let i = 0; i < segments; i++) {
-            ctx.beginPath(); ctx.fillStyle = wheelConfig[i].color;
-            ctx.moveTo(250, 250); ctx.arc(250, 250, 250, i * arc, (i + 1) * arc); ctx.fill();
-            ctx.save(); ctx.translate(250, 250); ctx.rotate(i * arc + arc / 2);
-            ctx.fillStyle = (wheelConfig[i].color === "#ffffff") ? "#121212" : "white";
-            ctx.font = "bold 18px Arial"; ctx.textAlign = "right";
-            ctx.fillText(wheelConfig[i].label, 235, 10); ctx.restore();
-        }
-    }
-    drawWheel();
-
-    function openGoogle() {
-        window.open('
+    <div id="section
