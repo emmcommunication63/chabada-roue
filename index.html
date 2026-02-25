@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chabada - Jeu Gagnant</title>
     <style>
-        /* DESIGN NOIR & VERT */
         :root {
             --noir: #121212;
             --gris-fonce: #1e1e1e;
@@ -16,26 +15,28 @@
 
         body { font-family: 'Segoe UI', sans-serif; text-align: center; background: var(--noir); color: var(--blanc); margin: 0; padding: 15px; }
         
-        .logo-container { margin: 10px auto; width: 140px; }
+        /* Ajustement du logo pour ne pas gêner le clic */
+        .logo-container { margin: 10px auto; width: 140px; position: relative; z-index: 1; }
         .logo-chabada { width: 100%; height: auto; border-radius: 10px; }
         
-        .card { max-width: 400px; margin: auto; background: var(--gris-fonce); padding: 30px 20px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #333; }
+        .card { max-width: 400px; margin: auto; background: var(--gris-fonce); padding: 30px 20px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #333; position: relative; z-index: 10; }
         
         h1 { color: var(--blanc); font-size: 22px; margin-bottom: 10px; text-transform: uppercase; }
         
         .step { display: none; }
         .active { display: block; }
         
-        /* BOUTONS */
-        button { border: none; padding: 18px; border-radius: 12px; cursor: pointer; font-size: 16px; width: 100%; font-weight: bold; margin-top: 15px; transition: 0.3s; text-transform: uppercase; }
+        /* Correction des boutons pour le clic */
+        button { border: none; padding: 18px; border-radius: 12px; cursor: pointer; font-size: 16px; width: 100%; font-weight: bold; margin-top: 15px; transition: 0.3s; text-transform: uppercase; position: relative; z-index: 20; display: block; }
+        
         .btn-google { background: var(--blanc); color: var(--noir); }
         .btn-play { background: var(--vert-chabada); color: var(--blanc); box-shadow: 0 4px 0 #1e8449; }
+        
         button:active { transform: translateY(2px); box-shadow: none; }
 
-        /* ROUE */
         #wheel-container { position: relative; width: 280px; height: 280px; margin: 20px auto; border: 5px solid var(--vert-chabada); border-radius: 50%; box-shadow: 0 0 20px rgba(39, 174, 96, 0.3); }
         #canvas { width: 100%; height: 100%; transition: transform 4s cubic-bezier(0.1, 0, 0.2, 1); border-radius: 50%; }
-        #pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid var(--vert-chabada); z-index: 10; }
+        #pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid var(--vert-chabada); z-index: 30; }
         
         .main-instruction { font-size: 16px; color: var(--gris-texte); margin-bottom: 25px; line-height: 1.4; }
         .highlight { color: var(--vert-chabada); font-weight: bold; }
@@ -51,7 +52,9 @@
     <div id="step1" class="step active">
         <h1>🎁 CADEAU OFFERT</h1>
         <div class="main-instruction">Donne-nous ton avis et <br><span class="highlight">reviens gagner ton lot !</span></div>
+        
         <button class="btn-google" onclick="openGoogle()">⭐️ LAISSER MON AVIS GOOGLE</button>
+        
         <div id="after-click" style="display:none; margin-top:25px; border-top: 1px solid #333; padding-top: 20px;">
             <p style="font-size: 14px; color: var(--vert-chabada);">Merci ! C'est le moment de jouer :</p>
             <button class="btn-play" onclick="showStep(2)">🎰 LANCER LA ROUE</button>
@@ -80,11 +83,11 @@
 
 <script>
     const wheelConfig = [
-        { label: "UN CAFÉ", color: "#121212", chance: 40 }, // Noir
-        { label: "BOISSON", color: "#27ae60", chance: 30 }, // Vert
-        { label: "DESSERT", color: "#1e1e1e", chance: 20 }, // Gris sombre
-        { label: "UN POKÉ", color: "#2ecc71", chance: 7 },  // Vert clair
-        { label: "UN MENU", color: "#ffffff", chance: 3 }   // Blanc
+        { label: "UN CAFÉ", color: "#121212", chance: 40 },
+        { label: "BOISSON", color: "#27ae60", chance: 30 },
+        { label: "DESSERT", color: "#1e1e1e", chance: 20 },
+        { label: "UN POKÉ", color: "#2ecc71", chance: 7 },
+        { label: "UN MENU", color: "#ffffff", chance: 3 }
     ];
 
     const canvas = document.getElementById('canvas');
@@ -101,4 +104,24 @@
             ctx.arc(250, 250, 250, i * arc, (i + 1) * arc);
             ctx.fill();
             ctx.save();
-            ctx.
+            ctx.translate(250, 250);
+            ctx.rotate(i * arc + arc / 2);
+            ctx.fillStyle = (wheelConfig[i].color === "#ffffff") ? "#121212" : "white";
+            ctx.font = "bold 26px Arial";
+            ctx.textAlign = "right";
+            ctx.fillText(wheelConfig[i].label, 230, 10);
+            ctx.restore();
+        }
+    }
+    drawWheel();
+
+    function openGoogle() {
+        // Redirection vers l'avis Google
+        window.open('https://search.google.com/local/writereview?placeid=ChIJLZxOIiYd90cRt01QYS6PTeg', '_blank');
+        // Affiche l'étape suivante sur le site
+        document.getElementById('after-click').style.display = 'block';
+    }
+
+    function showStep(n) {
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+        document.getElementById('step' + n).classList.add('active');
