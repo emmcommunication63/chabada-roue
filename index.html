@@ -10,18 +10,13 @@
         h1 { color: #d35400; font-size: 24px; margin-bottom: 20px; }
         .step { display: none; }
         .active { display: block; }
-        
-        /* Boutons */
         button { border: none; padding: 18px; border-radius: 50px; cursor: pointer; font-size: 16px; width: 100%; font-weight: bold; margin-top: 10px; transition: 0.3s; }
         .btn-google { background: #4285F4; color: white; box-shadow: 0 4px 0 #2c5ba7; }
         .btn-play { background: #e67e22; color: white; box-shadow: 0 4px 0 #b35d15; }
         button:active { transform: translateY(4px); box-shadow: none; }
-
-        /* Roue */
         #wheel-container { position: relative; width: 300px; height: 300px; margin: 20px auto; }
         #canvas { width: 100%; height: 100%; transition: transform 4s cubic-bezier(0.1, 0, 0.2, 1); }
         #pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #c0392b; z-index: 10; }
-        
         .main-instruction { font-size: 18px; color: #333; font-weight: 600; margin-bottom: 25px; line-height: 1.4; }
     </style>
 </head>
@@ -30,20 +25,11 @@
 <div class="card">
     <div id="step1" class="step active">
         <h1>🎁 Cadeau offert !</h1>
-        
-        <div class="main-instruction">
-            Donne-nous ton avis et <br>reviens gagner ton lot !
-        </div>
-        
-        <button class="btn-google" onclick="openGoogle()">
-            ⭐️ LAISSER MON AVIS GOOGLE
-        </button>
-        
+        <div class="main-instruction">Donne-nous ton avis et <br>reviens gagner ton lot !</div>
+        <button class="btn-google" onclick="openGoogle()">⭐️ LAISSER MON AVIS GOOGLE</button>
         <div id="after-click" style="display:none; margin-top:30px; border-top: 2px dashed #fdf2e9; padding-top: 20px;">
             <p style="font-size: 14px; color: #d35400; font-weight: bold;">Tu es revenu ? C'est le moment !</p>
-            <button class="btn-play" onclick="showStep(2)">
-                🎰 LANCER LA ROUE
-            </button>
+            <button class="btn-play" onclick="showStep(2)">🎰 LANCER LA ROUE</button>
         </div>
     </div>
 
@@ -68,18 +54,25 @@
 </div>
 
 <script>
-    const prizes = ["Café Offert", "Dessert Offert", "-10% Addition", "Digestif Offert", "Limoncello"];
-    const colors = ["#f1c40f", "#e67e22", "#e74c3c", "#9b59b6", "#3498db"];
+    // --- VOS LOTS ET VOS CHANCES (Total = 100) ---
+    const wheelConfig = [
+        { label: "UN CAFÉ", color: "#f1c40f", chance: 40 },
+        { label: "BOISSON SOFT", color: "#e67e22", chance: 30 },
+        { label: "UN DESSERT", color: "#e74c3c", chance: 20 },
+        { label: "UN POKÉ", color: "#9b59b6", chance: 7 },
+        { label: "UN MENU", color: "#3498db", chance: 3 }
+    ];
+
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     let currentRotation = 0;
 
     function drawWheel() {
-        const segments = prizes.length;
+        const segments = wheelConfig.length;
         const arc = 2 * Math.PI / segments;
         for (let i = 0; i < segments; i++) {
             ctx.beginPath();
-            ctx.fillStyle = colors[i];
+            ctx.fillStyle = wheelConfig[i].color;
             ctx.moveTo(250, 250);
             ctx.arc(250, 250, 250, i * arc, (i + 1) * arc);
             ctx.fill();
@@ -89,7 +82,7 @@
             ctx.fillStyle = "white";
             ctx.font = "bold 24px Arial";
             ctx.textAlign = "right";
-            ctx.fillText(prizes[i], 230, 10);
+            ctx.fillText(wheelConfig[i].label, 230, 10);
             ctx.restore();
         }
     }
@@ -107,16 +100,30 @@
 
     function spin() {
         document.getElementById('spin-button').disabled = true;
-        const totalPrizes = prizes.length;
-        const degreesPerPrize = 360 / totalPrizes;
-        const randomSpin = Math.floor(Math.random() * 360) + 1800; 
-        currentRotation += randomSpin;
+        
+        // Choisir le gagnant selon les chances
+        const random = Math.random() * 100;
+        let cumulativeChance = 0;
+        let winningIndex = 0;
+        for (let i = 0; i < wheelConfig.length; i++) {
+            cumulativeChance += wheelConfig[i].chance;
+            if (random < cumulativeChance) {
+                winningIndex = i;
+                break;
+            }
+        }
+
+        const segments = wheelConfig.length;
+        const degreesPerSegment = 360 / segments;
+        // Calcul pour aligner le centre du segment gagnant avec le pointeur (en haut)
+        const targetAngle = (360 - (winningIndex * degreesPerSegment) - (degreesPerSegment / 2) + 270) % 360;
+        const totalRotation = 2880 + targetAngle; 
+        currentRotation += totalRotation;
+        
         canvas.style.transform = `rotate(${currentRotation}deg)`;
 
         setTimeout(() => {
-            const finalAngle = currentRotation % 360;
-            const winningIndex = Math.floor((360 - (finalAngle % 360) + 270) % 360 / degreesPerPrize);
-            document.getElementById('prize-text').innerText = prizes[winningIndex];
+            document.getElementById('prize-text').innerText = wheelConfig[winningIndex].label;
             showStep(3);
         }, 4000);
     }
