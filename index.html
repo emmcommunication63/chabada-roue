@@ -14,8 +14,9 @@
         .btn-google { background: #4285F4; }
         #wheel-container { position: relative; width: 300px; height: 300px; margin: 20px auto; }
         #canvas { width: 100%; height: 100%; transition: transform 4s cubic-bezier(0.1, 0, 0.2, 1); transform: rotate(0deg); }
-        /* La flèche est fixée en haut au centre */
         #pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #c0392b; z-index: 10; }
+        .instruction { font-size: 15px; color: #666; margin-bottom: 15px; line-height: 1.4; }
+        .highlight { color: #d35400; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -23,11 +24,17 @@
 <div class="card">
     <div id="step1" class="step active">
         <h1>🎁 Un cadeau ?</h1>
-        <p>Laissez un avis Google pour jouer !</p>
-        <button class="btn-google" onclick="openGoogle()">1. JE LAISSE MON AVIS</button>
-        <div id="after-click" style="display:none; margin-top:20px;">
-            <p><small>Revenez ici après avoir posté l'avis.</small></p>
-            <button style="background:#e67e22;" onclick="showStep(2)">2. J'AI POSTÉ ! JOUER</button>
+        <div class="instruction">
+            1. Cliquez sur le bouton bleu.<br>
+            2. Laissez votre avis sur Google.<br>
+            3. <span class="highlight">Revenez ensuite sur cette page</span> pour lancer la roue !
+        </div>
+        
+        <button class="btn-google" onclick="openGoogle()">JE LAISSE MON AVIS</button>
+        
+        <div id="after-click" style="display:none; margin-top:20px; border-top: 1px dashed #ccc; padding-top: 15px;">
+            <p style="font-size: 14px;">Vous avez posté votre avis ?</p>
+            <button style="background:#e67e22;" onclick="showStep(2)">JOUER À LA ROUE</button>
         </div>
     </div>
 
@@ -47,7 +54,7 @@
         <div style="border: 2px dashed #d35400; padding: 15px; border-radius: 10px; background: #fff5eb;">
             CODE : <b>CHABADA-PROMO</b>
         </div>
-        <p><small>Valable 14 jours en caisse.</small></p>
+        <p><small>Valable 14 jours sur présentation de cet écran.</small></p>
     </div>
 </div>
 
@@ -93,19 +100,13 @@
         document.getElementById('spin-button').disabled = true;
         const totalPrizes = prizes.length;
         const degreesPerPrize = 360 / totalPrizes;
-        
-        // On tourne au moins 5 tours + un angle aléatoire
-        const extraDegrees = Math.floor(Math.random() * 360);
-        const totalRotation = 1800 + extraDegrees; 
-        currentRotation += totalRotation;
-        
-        canvas.style.transform = `rotate(${currentRotation}deg) `;
+        const randomSpin = Math.floor(Math.random() * 360) + 1800; 
+        currentRotation += randomSpin;
+        canvas.style.transform = `rotate(${currentRotation}deg)`;
 
         setTimeout(() => {
-            // La flèche est à 270° (en haut). On calcule quel index est en haut.
             const finalAngle = currentRotation % 360;
             const winningIndex = Math.floor((360 - (finalAngle % 360) + 270) % 360 / degreesPerPrize);
-            
             document.getElementById('prize-text').innerText = prizes[winningIndex];
             showStep(3);
         }, 4000);
