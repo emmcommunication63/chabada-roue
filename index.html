@@ -8,81 +8,40 @@
         :root {
             --noir: #121212;
             --gris-fonce: #1e1e1e;
-            --vert-chabada: #1ea222; /* Ton vert exact */
+            --vert-chabada: #1ea222;
             --blanc: #ffffff;
         }
 
-        body { 
-            font-family: 'Segoe UI', sans-serif; 
-            text-align: center; 
-            background: var(--noir); 
-            color: var(--blanc); 
-            margin: 0; 
-            padding: 0;
-        }
-        
+        body { font-family: 'Segoe UI', sans-serif; text-align: center; background: var(--noir); color: var(--blanc); margin: 0; padding: 0; }
         .header-logo { padding: 30px 0; background: var(--noir); }
         .logo-chabada { width: 150px; height: auto; pointer-events: none; }
-        
-        .card { 
-            max-width: 380px; 
-            margin: 0 auto; 
-            background: var(--gris-fonce); 
-            padding: 30px 25px; 
-            border-radius: 30px; 
-            position: relative;
-            z-index: 10;
-        }
-        
-        h1 { font-size: 22px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; }
+        .card { max-width: 380px; margin: 0 auto; background: var(--gris-fonce); padding: 30px 25px; border-radius: 30px; position: relative; z-index: 10; }
+        h1 { font-size: 22px; text-transform: uppercase; margin-bottom: 15px; }
         .step { display: none; }
         .active { display: block; }
-        
-        button { 
-            display: block;
-            width: 100%;
-            border: none; 
-            padding: 20px; 
-            border-radius: 15px; 
-            cursor: pointer; 
-            font-size: 16px; 
-            font-weight: bold; 
-            margin-top: 20px; 
-            text-transform: uppercase;
-            position: relative;
-            z-index: 9999 !important;
-        }
-        
+        button { display: block; width: 100%; border: none; padding: 20px; border-radius: 15px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 20px; text-transform: uppercase; position: relative; z-index: 9999; }
         .btn-google { background: var(--blanc); color: var(--noir); }
         .btn-play { background: var(--vert-chabada); color: var(--blanc); }
         
-        button:active { transform: scale(0.98); opacity: 0.9; }
+        /* Style du coupon cliquable */
+        #coupon-validation { 
+            border: 2px dashed var(--vert-chabada); 
+            padding: 20px; 
+            border-radius: 20px; 
+            background: rgba(30, 162, 34, 0.1); 
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 20px;
+        }
+        #coupon-validation.used {
+            border-color: #555;
+            background: #222;
+            color: #777 !important;
+        }
 
-        #wheel-container { 
-            position: relative; 
-            width: 300px; 
-            height: 300px; 
-            margin: 30px auto; 
-            background: transparent; 
-        }
-        #canvas { 
-            width: 100%; 
-            height: 100%; 
-            transition: transform 4s cubic-bezier(0.1, 0, 0.2, 1); 
-            border-radius: 50%;
-        }
-        #pointer { 
-            position: absolute; 
-            top: -10px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            width: 0; height: 0; 
-            border-left: 15px solid transparent; 
-            border-right: 15px solid transparent; 
-            border-top: 25px solid var(--vert-chabada); 
-            z-index: 30; 
-        }
-        
+        #wheel-container { position: relative; width: 300px; height: 300px; margin: 30px auto; }
+        #canvas { width: 100%; height: 100%; transition: transform 4s cubic-bezier(0.1, 0, 0.2, 1); border-radius: 50%; }
+        #pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid var(--vert-chabada); z-index: 30; }
         .instruction { font-size: 16px; color: #b3b3b3; line-height: 1.5; margin-bottom: 25px; }
     </style>
 </head>
@@ -96,9 +55,7 @@
     <div id="section1" class="step active">
         <h1>🎁 Cadeau Offert</h1>
         <p class="instruction">Donne-nous ton avis et <br><span style="color:var(--vert-chabada); font-weight:bold;">reviens gagner ton lot !</span></p>
-        
         <button class="btn-google" onclick="openGoogle()">⭐️ LAISSER MON AVIS GOOGLE</button>
-        
         <div id="after-click" style="display:none; margin-top:30px; border-top: 1px solid #333; padding-top: 20px;">
             <button class="btn-play" onclick="showStep(2)">🎰 LANCER LA ROUE</button>
         </div>
@@ -117,9 +74,11 @@
         <h2 style="color:var(--vert-chabada)">Bravo ! 🎉</h2>
         <p>Tu as gagné :</p>
         <div style="font-size: 32px; font-weight: bold; margin: 25px 0;" id="prize-text"></div>
-        <div style="border: 2px solid var(--vert-chabada); padding: 20px; border-radius: 20px; background: rgba(30, 162, 34, 0.1);">
-            <small style="color: #b3b3b3; display:block; margin-bottom:5px;">TON CODE :</small>
-            <b style="font-size: 22px; color: var(--vert-chabada);">CHABADA-PROMO</b>
+        
+        <div id="coupon-validation" onclick="validateCoupon()">
+            <small id="exp-text" style="color: #b3b3b3; display:block; margin-bottom:5px;"></small>
+            <b id="unique-code" style="font-size: 20px; color: var(--vert-chabada);"></b>
+            <p id="tap-hint" style="font-size: 10px; margin-top: 10px; color: #b3b3b3;">(Cliquer ici pour valider en caisse)</p>
         </div>
     </div>
 </div>
@@ -127,9 +86,9 @@
 <script>
     const wheelConfig = [
         { label: "UN CAFÉ", color: "#1e1e1e", chance: 40 },
-        { label: "BOISSON", color: "#1ea222", chance: 30 }, // Ton vert exact
+        { label: "BOISSON", color: "#1ea222", chance: 30 },
         { label: "DESSERT", color: "#2a2a2a", chance: 20 },
-        { label: "UN POKÉ", color: "#146d17", chance: 7 }, // Un vert plus sombre pour le contraste
+        { label: "UN POKÉ", color: "#146d17", chance: 7 },
         { label: "UN MENU", color: "#ffffff", chance: 3 }
     ];
 
@@ -182,10 +141,40 @@
         const targetAngle = (360 - (winningIndex * degreesPerSegment) - (degreesPerSegment / 2) + 270) % 360;
         currentRotation += 2880 + targetAngle;
         canvas.style.transform = `rotate(${currentRotation}deg)`;
+
         setTimeout(() => {
+            // GÉNÉRATION CODE UNIQUE
+            const now = new Date();
+            const jour = String(now.getDate()).padStart(2, '0');
+            const mois = String(now.getMonth() + 1).padStart(2, '0');
+            const heure = String(now.getHours()).padStart(2, '0');
+            const min = String(now.getMinutes()).padStart(2, '0');
+            const randomID = Math.floor(1000 + Math.random() * 9000);
+            
+            const uniqueCode = `CHAB-${jour}${mois}-${heure}${min}-${randomID}`;
+            
+            const expiration = new Date();
+            expiration.setDate(now.getDate() + 14);
+            const dateExp = expiration.toLocaleDateString('fr-FR');
+
             document.getElementById('prize-text').innerText = wheelConfig[winningIndex].label;
+            document.getElementById('unique-code').innerText = uniqueCode;
+            document.getElementById('exp-text').innerText = "VALABLE JUSQU'AU : " + dateExp;
+            
             showStep(3);
         }, 4000);
+    }
+
+    function validateCoupon() {
+        const coupon = document.getElementById('coupon-validation');
+        if(!coupon.classList.contains('used')) {
+            if(confirm("Valider ce coupon ? Cette action est irréversible.")) {
+                coupon.classList.add('used');
+                document.getElementById('unique-code').innerText = "DÉJÀ UTILISÉ";
+                document.getElementById('tap-hint').innerText = "Validé en caisse";
+                document.getElementById('unique-code').style.color = "#777";
+            }
+        }
     }
 </script>
 </body>
