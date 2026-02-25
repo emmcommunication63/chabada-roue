@@ -52,10 +52,14 @@
             text-transform: uppercase;
             position: relative;
             z-index: 9999 !important;
+            transition: 0.3s;
         }
         
         .btn-google { background: var(--blanc); color: var(--noir); box-shadow: 0 4px 0 #ccc; }
         .btn-play { background: var(--vert-chabada); color: var(--blanc); box-shadow: 0 4px 0 #146d17; }
+        
+        /* État "En attente" pour le bouton de la roue */
+        .btn-waiting { opacity: 0.5; transform: scale(0.95); filter: grayscale(0.5); }
         
         button:active { transform: translateY(4px); box-shadow: none; }
 
@@ -67,11 +71,7 @@
             cursor: pointer;
             margin-top: 20px;
         }
-        #coupon-validation.used {
-            border-color: #555;
-            background: #222;
-            color: #777 !important;
-        }
+        #coupon-validation.used { border-color: #555; background: #222; color: #777 !important; }
 
         #wheel-container { position: relative; width: 300px; height: 300px; margin: 30px auto; }
         #canvas { width: 100%; height: 100%; transition: transform 4s cubic-bezier(0.1, 0, 0.2, 1); border-radius: 50%; }
@@ -83,7 +83,8 @@
         }
         
         .instruction { font-size: 16px; color: #b3b3b3; line-height: 1.5; margin-bottom: 25px; }
-        .return-msg { font-size: 18px; color: var(--vert-chabada); font-weight: bold; margin-bottom: 10px; }
+        .step-label { font-size: 14px; color: var(--vert-chabada); font-weight: bold; margin-top: 20px; text-align: left; }
+        .divider { border-top: 1px solid #333; margin: 25px 0; position: relative; }
     </style>
 </head>
 <body>
@@ -95,17 +96,20 @@
 <div class="card">
     <div id="section1" class="step active">
         <h1>🎁 Cadeau Offert</h1>
-        <p class="instruction">Donne-nous ton avis et <br>gagne ton lot immédiatement !</p>
+        <p class="instruction">Suivez les 2 étapes pour gagner :</p>
         
+        <div class="step-label">ÉTAPE 1</div>
         <button class="btn-google" onclick="openGoogle()">
-            1. ÉCRIRE MON AVIS
+            ⭐️ ÉCRIRE MON AVIS GOOGLE
         </button>
         
-        <div id="after-click" style="display:none; margin-top:30px; border-top: 1px solid #333; padding-top: 20px;">
-            <p class="return-msg">2. REVIENS ICI !</p>
-            <p style="font-size: 14px; color: #b3b3b3;">Une fois l'avis posté, clique sur le bouton :</p>
-            <button class="btn-play" onclick="showStep(2)">🎰 LANCER LA ROUE</button>
-        </div>
+        <div class="divider"></div>
+
+        <div class="step-label">ÉTAPE 2</div>
+        <p id="return-hint" style="font-size: 14px; color: #b3b3b3; text-align: left; margin-bottom: -10px;">Revenez sur cette page après votre avis :</p>
+        <button id="main-play-btn" class="btn-play btn-waiting" onclick="showStep(2)">
+            🎰 LANCER LA ROUE
+        </button>
     </div>
 
     <div id="section2" class="step">
@@ -131,7 +135,6 @@
 </div>
 
 <script>
-    // CONFIGURATION DES LOTS ET PROBABILITÉS (Total 100)
     const wheelConfig = [
         { label: "UN CAFÉ", color: "#1e1e1e", chance: 40 },
         { label: "BOISSON", color: "#1ea222", chance: 30 },
@@ -167,7 +170,11 @@
 
     function openGoogle() {
         window.open('https://search.google.com/local/writereview?placeid=ChIJLZxOIiYd90cRt01QYS6PTeg', '_blank');
-        document.getElementById('after-click').style.display = 'block';
+        // Active visuellement le bouton de la roue
+        const playBtn = document.getElementById('main-play-btn');
+        playBtn.classList.remove('btn-waiting');
+        document.getElementById('return-hint').style.color = "#1ea222";
+        document.getElementById('return-hint').innerHTML = "<b>✓ Avis envoyé ? Cliquez ci-dessous :</b>";
     }
 
     function showStep(n) {
@@ -177,51 +184,3 @@
 
     function spin() {
         document.getElementById('spin-button').disabled = true;
-        const random = Math.random() * 100;
-        let cumulativeChance = 0;
-        let winningIndex = 0;
-        for (let i = 0; i < wheelConfig.length; i++) {
-            cumulativeChance += wheelConfig[i].chance;
-            if (random < cumulativeChance) { winningIndex = i; break; }
-        }
-        const segments = wheelConfig.length;
-        const degreesPerSegment = 360 / segments;
-        const targetAngle = (360 - (winningIndex * degreesPerSegment) - (degreesPerSegment / 2) + 270) % 360;
-        currentRotation += 2880 + targetAngle;
-        canvas.style.transform = `rotate(${currentRotation}deg)`;
-
-        setTimeout(() => {
-            // GÉNÉRATION CODE UNIQUE
-            const now = new Date();
-            const jour = String(now.getDate()).padStart(2, '0');
-            const mois = String(now.getMonth() + 1).padStart(2, '0');
-            const heure = String(now.getHours()).padStart(2, '0');
-            const min = String(now.getMinutes()).padStart(2, '0');
-            const randomID = Math.floor(1000 + Math.random() * 9000);
-            const uniqueCode = `CHAB-${jour}${mois}-${heure}${min}-${randomID}`;
-            
-            const expiration = new Date();
-            expiration.setDate(now.getDate() + 14);
-            const dateExp = expiration.toLocaleDateString('fr-FR');
-
-            document.getElementById('prize-text').innerText = wheelConfig[winningIndex].label;
-            document.getElementById('unique-code').innerText = uniqueCode;
-            document.getElementById('exp-text').innerText = "VALABLE JUSQU'AU : " + dateExp;
-            showStep(3);
-        }, 4000);
-    }
-
-    function validateCoupon() {
-        const coupon = document.getElementById('coupon-validation');
-        if(!coupon.classList.contains('used')) {
-            if(confirm("Valider ce coupon ? Cette action est irréversible.")) {
-                coupon.classList.add('used');
-                document.getElementById('unique-code').innerText = "DÉJÀ UTILISÉ";
-                document.getElementById('tap-hint').innerText = "Validé en caisse";
-                document.getElementById('unique-code').style.color = "#777";
-            }
-        }
-    }
-</script>
-</body>
-</html>
