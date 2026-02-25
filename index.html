@@ -3,52 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chabada - Cadeau Gagnant</title>
+    <title>Chabada - Jeu Gagnant</title>
     <style>
-        body { font-family: sans-serif; text-align: center; background: #f4f4f4; margin: 0; padding: 20px; }
-        .card { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h1 { color: #e67e22; }
+        body { font-family: 'Segoe UI', sans-serif; text-align: center; background: #fdf2e9; margin: 0; padding: 20px; }
+        .card { max-width: 400px; margin: auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h1 { color: #d35400; margin-bottom: 5px; }
         .step { display: none; }
         .active { display: block; }
-        button { background: #27ae60; color: white; border: none; padding: 15px 25px; border-radius: 10px; cursor: pointer; font-size: 16px; width: 100%; font-weight: bold; }
-        .btn-google { background: #4285F4; margin-bottom: 10px; }
-        .hidden { display: none; }
+        button { background: #27ae60; color: white; border: none; padding: 15px; border-radius: 50px; cursor: pointer; font-size: 16px; width: 100%; font-weight: bold; margin-top: 10px; }
+        .btn-google { background: #4285F4; }
+        #wheel-container { position: relative; width: 280px; height: 280px; margin: 20px auto; }
+        canvas { width: 100%; height: 100%; transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1); }
+        #pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #c0392b; z-index: 10; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h1>🎁 Votre Cadeau</h1>
-
-    <div id="section1" class="step active">
-        <p>Pour débloquer la roue 100% gagnante, soutenez-nous avec un avis Google !</p>
-        
-        <button class="btn-google" onclick="openGoogle()">1. Je laisse mon avis</button>
-        
-        <div id="after-click" class="hidden">
-            <p style="font-size: 14px; color: #666;">Merci ! Une fois l'avis posté, cliquez ci-dessous :</p>
-            <button onclick="goToWheel()">2. Accéder à la roue</button>
+    <div id="step1" class="step active">
+        <h1>🎁 Un cadeau ?</h1>
+        <p>Laissez-nous un avis sur Google pour débloquer la roue 100% gagnante !</p>
+        <button class="btn-google" onclick="openGoogle()">1. JE LAISSE MON AVIS</button>
+        <div id="after-click" style="display:none;">
+            <button style="background:#e67e22;" onclick="showStep(2)">2. C'EST FAIT ! JOUER</button>
         </div>
     </div>
 
-    <div id="section2" class="step">
-        <h2>Bravo ! 🎉</h2>
-        <p>La roue va bientôt être installée ici.</p>
+    <div id="step2" class="step">
+        <h1>Bonne chance !</h1>
+        <div id="wheel-container">
+            <div id="pointer"></div>
+            <canvas id="canvas" width="300" height="300"></canvas>
+        </div>
+        <button id="spin-button" onclick="spin()">LANCER LA ROUE</button>
+    </div>
+
+    <div id="step3" class="step">
+        <h2>Félicitations ! 🎉</h2>
+        <p>Vous avez gagné :</p>
+        <div style="font-size: 26px; color: #d35400; font-weight: bold; margin: 20px 0;" id="prize-text"></div>
+        <div style="border: 2px dashed #d35400; padding: 15px; border-radius: 10px; background: #fff5eb;">
+            CODE : <span style="font-size: 20px; font-weight: bold;">CHABADA-PROMO</span>
+        </div>
+        <p><small>Présentez cet écran en caisse lors de votre commande (valable 14 jours).</small></p>
     </div>
 </div>
 
 <script>
+    const prizes = ["Café Offert", "Dessert Offert", "-10% Addition", "Digestif Offert", "Un Limoncello"];
+    const colors = ["#f1c40f", "#e67e22", "#e74c3c", "#9b59b6", "#3498db"];
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let currentRotation = 0;
+
+    function drawWheel() {
+        const sliceAngle = (2 * Math.PI) / prizes.length;
+        prizes.forEach((prize, i) => {
+            ctx.beginPath(); ctx.fillStyle = colors[i]; ctx.moveTo(150, 150);
+            ctx.arc(150, 150, 150, i * sliceAngle, (i + 1) * sliceAngle);
+            ctx.fill();
+            ctx.save(); ctx.translate(150, 150); ctx.rotate(i * sliceAngle + sliceAngle / 2);
+            ctx.fillStyle = "white"; ctx.font = "bold 14px Arial"; ctx.fillText(prize, 50, 5); ctx.restore();
+        });
+    }
+    drawWheel();
+
     function openGoogle() {
-        // REMPLACE LE LIEN CI-DESSOUS PAR TON LIEN GOOGLE MAPS
         window.open('https://search.google.com/local/writereview?placeid=ChIJLZxOIiYd90cRt01QYS6PTeg', '_blank');
-        
-        // On montre le bouton pour passer à l'étape suivante
         document.getElementById('after-click').style.display = 'block';
     }
 
-    function goToWheel() {
-        document.getElementById('section1').classList.remove('active');
-        document.getElementById('section2').classList.add('active');
+    function showStep(n) {
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+        document.getElementById('step' + n).classList.add('active');
+    }
+
+    function spin() {
+        document.getElementById('spin-button').disabled = true;
+        const randomSpin = Math.floor(Math.random() * 360) + 1440;
+        currentRotation += randomSpin;
+        canvas.style.transform = `rotate(${currentRotation}deg)`;
+        setTimeout(() => {
+            const actualDeg = currentRotation % 360;
+            const prizeIndex = Math.floor((360 - (actualDeg % 360)) / (360 / prizes.length)) % prizes.length;
+            document.getElementById('prize-text').innerText = prizes[prizeIndex];
+            showStep(3);
+        }, 4000);
     }
 </script>
 
