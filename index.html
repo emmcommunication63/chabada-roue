@@ -39,7 +39,6 @@
         .btn-google { background: var(--blanc); color: var(--noir); box-shadow: 0 4px 0 #ccc; }
         .btn-play { background: var(--vert-chabada); color: var(--blanc); box-shadow: 0 4px 0 #146d17; }
         
-        /* État désactivé réel */
         button:disabled { 
             opacity: 0.3 !important; 
             cursor: not-allowed !important; 
@@ -60,7 +59,8 @@
         .step-label { font-size: 14px; color: var(--vert-chabada); font-weight: bold; margin-top: 20px; text-align: left; }
         .divider { border-top: 1px solid #444; margin: 25px 0; }
         
-        #return-hint { font-size: 16px; color: #ffcc00; text-align: center; margin-bottom: -5px; font-weight: 800; text-transform: uppercase; }
+        #return-hint { font-size: 15px; color: #ffcc00; text-align: center; margin-bottom: -5px; font-weight: 800; text-transform: uppercase; }
+        .staff-note { font-size: 13px; color: #1ea222; margin-top: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -87,6 +87,7 @@
         <button id="main-play-btn" class="btn-play" onclick="showStep(2)" disabled="true">
             🎰 LANCER LA ROUE
         </button>
+        <p class="staff-note">Présentez votre gain à l'équipe !</p>
     </div>
 
     <div id="section2" class="step">
@@ -100,11 +101,16 @@
 
     <div id="section3" class="step">
         <h2 style="color:var(--vert-chabada)">BRAVO ! 🎉</h2>
-        <div style="font-size: 26px; font-weight: bold; margin: 25px 0;" id="prize-text"></div>
+        <div style="font-size: 26px; font-weight: bold; margin: 20px 0;" id="prize-text"></div>
+        
+        <p style="color:#ffffff; font-weight: bold; font-size: 14px; margin-bottom: 15px;">
+            📸 Montrez cet écran à l'équipe <br> pour recevoir votre cadeau !
+        </p>
+
         <div id="coupon-validation" onclick="validateCoupon()">
             <small id="exp-text" style="color: #b3b3b3; display:block; margin-bottom:5px;"></small>
             <b id="unique-code" style="font-size: 20px; color: var(--vert-chabada);"></b>
-            <p id="tap-hint" style="font-size: 10px; margin-top: 10px; color: #b3b3b3;">(Cliquer ici pour valider en caisse)</p>
+            <p id="tap-hint" style="font-size: 10px; margin-top: 10px; color: #b3b3b3;">(À valider par un équipier en caisse)</p>
         </div>
     </div>
 </div>
@@ -138,52 +144,4 @@
     drawWheel();
 
     function openGoogle() {
-        window.open('https://search.google.com/local/writereview?placeid=ChIJLZxOIiYd90cRt01QYS6PTeg', '_blank');
-        const playBtn = document.getElementById('main-play-btn');
-        // ACTION : On débloque le bouton de la roue
-        playBtn.disabled = false;
-        document.getElementById('return-hint').style.color = "#1ea222";
-        document.getElementById('return-hint').innerHTML = "<b>✓ MERCI ! CLIQUEZ CI-DESSOUS :</b>";
-    }
-
-    function showStep(n) {
-        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-        document.getElementById('section' + n).classList.add('active');
-    }
-
-    function spin() {
-        document.getElementById('spin-button').disabled = true;
-        const random = Math.random() * 100;
-        let cumulativeChance = 0; let winningIndex = 0;
-        for (let i = 0; i < wheelConfig.length; i++) {
-            cumulativeChance += wheelConfig[i].chance;
-            if (random < cumulativeChance) { winningIndex = i; break; }
-        }
-        const targetAngle = (360 - (winningIndex * (360/wheelConfig.length)) - (360/wheelConfig.length/2) + 270) % 360;
-        currentRotation += 2880 + targetAngle;
-        canvas.style.transform = `rotate(${currentRotation}deg)`;
-
-        setTimeout(() => {
-            const now = new Date();
-            const uniqueCode = `CHAB-${String(now.getDate()).padStart(2,'0')}${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}-${Math.floor(1000+Math.random()*9000)}`;
-            const exp = new Date(); exp.setDate(now.getDate()+14);
-            let labelGain = wheelConfig[winningIndex].label;
-            if(labelGain.includes("DESSERT")) labelGain = "UN DESSERT 🍰 (hors barres maison)";
-            document.getElementById('prize-text').innerText = labelGain;
-            document.getElementById('unique-code').innerText = uniqueCode;
-            document.getElementById('exp-text').innerText = "VALABLE JUSQU'AU : " + exp.toLocaleDateString('fr-FR');
-            showStep(3);
-        }, 4000);
-    }
-
-    function validateCoupon() {
-        const coupon = document.getElementById('coupon-validation');
-        if(!coupon.classList.contains('used') && confirm("Valider ce coupon ?")) {
-            coupon.classList.add('used');
-            document.getElementById('unique-code').innerText = "DÉJÀ UTILISÉ";
-            document.getElementById('unique-code').style.color = "#777";
-        }
-    }
-</script>
-</body>
-</html>
+        window.open('
