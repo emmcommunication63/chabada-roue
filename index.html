@@ -13,8 +13,8 @@
         button { background: #27ae60; color: white; border: none; padding: 15px; border-radius: 50px; cursor: pointer; font-size: 16px; width: 100%; font-weight: bold; margin-top: 10px; }
         .btn-google { background: #4285F4; }
         #wheel-container { position: relative; width: 280px; height: 280px; margin: 20px auto; }
-        canvas { width: 100%; height: 100%; transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1); }
-        #pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #c0392b; z-index: 10; }
+        canvas { width: 100%; height: 100%; transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1); transform: rotate(0deg); }
+        #pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #c0392b; z-index: 10; }
     </style>
 </head>
 <body>
@@ -24,8 +24,9 @@
         <h1>🎁 Un cadeau ?</h1>
         <p>Laissez-nous un avis sur Google pour débloquer la roue 100% gagnante !</p>
         <button class="btn-google" onclick="openGoogle()">1. JE LAISSE MON AVIS</button>
-        <div id="after-click" style="display:none;">
-            <button style="background:#e67e22;" onclick="showStep(2)">2. C'EST FAIT ! JOUER</button>
+        <div id="after-click" style="display:none; margin-top:20px; border-top:1px solid #eee; padding-top:10px;">
+            <p style="font-size:14px; color:#666;">Une fois l'avis posté sur Google, <b>revenez sur cet onglet</b>.</p>
+            <button style="background:#e67e22;" onclick="showStep(2)">2. JE SUIS DE RETOUR ! JOUER</button>
         </div>
     </div>
 
@@ -45,7 +46,7 @@
         <div style="border: 2px dashed #d35400; padding: 15px; border-radius: 10px; background: #fff5eb;">
             CODE : <span style="font-size: 20px; font-weight: bold;">CHABADA-PROMO</span>
         </div>
-        <p><small>Présentez cet écran en caisse lors de votre commande (valable 14 jours).</small></p>
+        <p><small>Présentez cet écran en caisse (valable 14 jours sous condition d'achat).</small></p>
     </div>
 </div>
 
@@ -62,8 +63,10 @@
             ctx.beginPath(); ctx.fillStyle = colors[i]; ctx.moveTo(150, 150);
             ctx.arc(150, 150, 150, i * sliceAngle, (i + 1) * sliceAngle);
             ctx.fill();
-            ctx.save(); ctx.translate(150, 150); ctx.rotate(i * sliceAngle + sliceAngle / 2);
-            ctx.fillStyle = "white"; ctx.font = "bold 14px Arial"; ctx.fillText(prize, 50, 5); ctx.restore();
+            ctx.save(); ctx.translate(150, 150); 
+            ctx.rotate(i * sliceAngle + sliceAngle / 2);
+            ctx.fillStyle = "white"; ctx.font = "bold 14px Arial"; ctx.textAlign = "right";
+            ctx.fillText(prize, 130, 5); ctx.restore();
         });
     }
     drawWheel();
@@ -79,14 +82,23 @@
     }
 
     function spin() {
-        document.getElementById('spin-button').disabled = true;
-        const randomSpin = Math.floor(Math.random() * 360) + 1440;
+        const btn = document.getElementById('spin-button');
+        btn.disabled = true;
+        btn.style.background = "#bdc3c7";
+        
+        const segments = prizes.length;
+        const degreesPerSegment = 360 / segments;
+        const randomSpin = Math.floor(Math.random() * 360) + 2880; // 8 tours
         currentRotation += randomSpin;
+        
         canvas.style.transform = `rotate(${currentRotation}deg)`;
+
         setTimeout(() => {
-            const actualDeg = currentRotation % 360;
-            const prizeIndex = Math.floor((360 - (actualDeg % 360)) / (360 / prizes.length)) % prizes.length;
-            document.getElementById('prize-text').innerText = prizes[prizeIndex];
+            // Calcul précis pour la flèche en haut (270 degrés)
+            const actualRotation = currentRotation % 360;
+            const winningIndex = Math.floor((360 - (actualRotation % 360) + 270) % 360 / degreesPerSegment);
+            
+            document.getElementById('prize-text').innerText = prizes[winningIndex];
             showStep(3);
         }, 4000);
     }
