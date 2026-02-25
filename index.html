@@ -8,7 +8,7 @@
         :root {
             --noir: #121212;
             --gris-fonce: #1e1e1e;
-            --vert-chabada: #799351; /* Nouveau vert plus naturel */
+            --vert-chabada: #1ea222; /* Ton vert exact */
             --blanc: #ffffff;
         }
 
@@ -58,7 +58,6 @@
         
         button:active { transform: scale(0.98); opacity: 0.9; }
 
-        /* ROUE SANS BORDURE (ÉPURÉE) */
         #wheel-container { 
             position: relative; 
             width: 300px; 
@@ -118,7 +117,7 @@
         <h2 style="color:var(--vert-chabada)">Bravo ! 🎉</h2>
         <p>Tu as gagné :</p>
         <div style="font-size: 32px; font-weight: bold; margin: 25px 0;" id="prize-text"></div>
-        <div style="border: 2px solid var(--vert-chabada); padding: 20px; border-radius: 20px; background: rgba(121, 147, 81, 0.1);">
+        <div style="border: 2px solid var(--vert-chabada); padding: 20px; border-radius: 20px; background: rgba(30, 162, 34, 0.1);">
             <small style="color: #b3b3b3; display:block; margin-bottom:5px;">TON CODE :</small>
             <b style="font-size: 22px; color: var(--vert-chabada);">CHABADA-PROMO</b>
         </div>
@@ -128,9 +127,9 @@
 <script>
     const wheelConfig = [
         { label: "UN CAFÉ", color: "#1e1e1e", chance: 40 },
-        { label: "BOISSON", color: "#799351", chance: 30 },
+        { label: "BOISSON", color: "#1ea222", chance: 30 }, // Ton vert exact
         { label: "DESSERT", color: "#2a2a2a", chance: 20 },
-        { label: "UN POKÉ", color: "#556b2f", chance: 7 },
+        { label: "UN POKÉ", color: "#146d17", chance: 7 }, // Un vert plus sombre pour le contraste
         { label: "UN MENU", color: "#ffffff", chance: 3 }
     ];
 
