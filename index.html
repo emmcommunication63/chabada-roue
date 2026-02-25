@@ -21,7 +21,7 @@
             padding: 0;
         }
         
-        .header-logo { padding: 30px 0; background: var(--noir); }
+        .header-logo { padding: 30px 0; background: var(--noir); position: relative; z-index: 1; }
         .logo-chabada { width: 150px; height: auto; pointer-events: none; }
         
         .card { 
@@ -39,6 +39,7 @@
         .step { display: none; }
         .active { display: block; }
         
+        /* Correction de la cliquabilité */
         button { 
             display: block;
             width: 100%;
@@ -51,17 +52,18 @@
             margin-top: 20px; 
             text-transform: uppercase;
             position: relative;
-            z-index: 9999 !important;
+            z-index: 20; /* Priorité standard pour les boutons */
             transition: 0.3s;
+            -webkit-appearance: none;
         }
         
         .btn-google { background: var(--blanc); color: var(--noir); box-shadow: 0 4px 0 #ccc; }
         .btn-play { background: var(--vert-chabada); color: var(--blanc); box-shadow: 0 4px 0 #146d17; }
         
-        /* État "En attente" pour le bouton de la roue */
-        .btn-waiting { opacity: 0.5; transform: scale(0.95); filter: grayscale(0.5); }
+        /* État visuel uniquement */
+        .btn-waiting { opacity: 0.5; filter: grayscale(0.5); }
         
-        button:active { transform: translateY(4px); box-shadow: none; }
+        button:active { transform: translateY(2px); box-shadow: none; }
 
         #coupon-validation { 
             border: 2px dashed var(--vert-chabada); 
@@ -82,9 +84,8 @@
             z-index: 30; 
         }
         
-        .instruction { font-size: 16px; color: #b3b3b3; line-height: 1.5; margin-bottom: 25px; }
         .step-label { font-size: 14px; color: var(--vert-chabada); font-weight: bold; margin-top: 20px; text-align: left; }
-        .divider { border-top: 1px solid #333; margin: 25px 0; position: relative; }
+        .divider { border-top: 1px solid #444; margin: 25px 0; }
     </style>
 </head>
 <body>
@@ -96,7 +97,6 @@
 <div class="card">
     <div id="section1" class="step active">
         <h1>🎁 Cadeau Offert</h1>
-        <p class="instruction">Suivez les 2 étapes pour gagner :</p>
         
         <div class="step-label">ÉTAPE 1</div>
         <button class="btn-google" onclick="openGoogle()">
@@ -106,7 +106,7 @@
         <div class="divider"></div>
 
         <div class="step-label">ÉTAPE 2</div>
-        <p id="return-hint" style="font-size: 14px; color: #b3b3b3; text-align: left; margin-bottom: -10px;">Revenez sur cette page après votre avis :</p>
+        <p id="return-hint" style="font-size: 14px; color: #888; text-align: left; margin-bottom: -10px;">Revenez ici après avoir posté :</p>
         <button id="main-play-btn" class="btn-play btn-waiting" onclick="showStep(2)">
             🎰 LANCER LA ROUE
         </button>
@@ -123,9 +123,7 @@
 
     <div id="section3" class="step">
         <h2 style="color:var(--vert-chabada)">BRAVO ! 🎉</h2>
-        <p>Tu as gagné :</p>
         <div style="font-size: 32px; font-weight: bold; margin: 25px 0;" id="prize-text"></div>
-        
         <div id="coupon-validation" onclick="validateCoupon()">
             <small id="exp-text" style="color: #b3b3b3; display:block; margin-bottom:5px;"></small>
             <b id="unique-code" style="font-size: 20px; color: var(--vert-chabada);"></b>
@@ -170,11 +168,9 @@
 
     function openGoogle() {
         window.open('https://search.google.com/local/writereview?placeid=ChIJLZxOIiYd90cRt01QYS6PTeg', '_blank');
-        // Active visuellement le bouton de la roue
         const playBtn = document.getElementById('main-play-btn');
         playBtn.classList.remove('btn-waiting');
-        document.getElementById('return-hint').style.color = "#1ea222";
-        document.getElementById('return-hint').innerHTML = "<b>✓ Avis envoyé ? Cliquez ci-dessous :</b>";
+        document.getElementById('return-hint').innerHTML = "<b style='color:#1ea222'>✓ Terminé ? Cliquez ci-dessous :</b>";
     }
 
     function showStep(n) {
@@ -184,3 +180,37 @@
 
     function spin() {
         document.getElementById('spin-button').disabled = true;
+        const random = Math.random() * 100;
+        let cumulativeChance = 0;
+        let winningIndex = 0;
+        for (let i = 0; i < wheelConfig.length; i++) {
+            cumulativeChance += wheelConfig[i].chance;
+            if (random < cumulativeChance) { winningIndex = i; break; }
+        }
+        const targetAngle = (360 - (winningIndex * (360/wheelConfig.length)) - (360/wheelConfig.length/2) + 270) % 360;
+        currentRotation += 2880 + targetAngle;
+        canvas.style.transform = `rotate(${currentRotation}deg)`;
+
+        setTimeout(() => {
+            const now = new Date();
+            const uniqueCode = `CHAB-${String(now.getDate()).padStart(2,'0')}${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}-${Math.floor(1000+Math.random()*9000)}`;
+            const exp = new Date(); exp.setDate(now.getDate()+14);
+
+            document.getElementById('prize-text').innerText = wheelConfig[winningIndex].label;
+            document.getElementById('unique-code').innerText = uniqueCode;
+            document.getElementById('exp-text').innerText = "VALABLE JUSQU'AU : " + exp.toLocaleDateString('fr-FR');
+            showStep(3);
+        }, 4000);
+    }
+
+    function validateCoupon() {
+        const coupon = document.getElementById('coupon-validation');
+        if(!coupon.classList.contains('used') && confirm("Valider ce coupon ?")) {
+            coupon.classList.add('used');
+            document.getElementById('unique-code').innerText = "DÉJÀ UTILISÉ";
+            document.getElementById('unique-code').style.color = "#777";
+        }
+    }
+</script>
+</body>
+</html>
